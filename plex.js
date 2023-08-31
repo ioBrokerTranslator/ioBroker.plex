@@ -8,6 +8,7 @@ const _http = require('express')();
 const _parser = require('body-parser');
 const _multer = require('multer');
 const _axios = require('axios')
+_axios.defaults.timeout = 3000
 const { v1: _uuid } = require('uuid');
 
 const Plex = require('plex-api');
@@ -98,7 +99,6 @@ function startAdapter(options)
 		// Secure connection
 		REQUEST_OPTIONS.secureConnection = false;
 		REQUEST_OPTIONS._protocol = 'http:';
-		REQUEST_OPTIONS.timeout = 1000;
 
 		if (adapter.config.secureConnection && adapter.config.certPublicVal && adapter.config.certPrivateVal)
 		{
@@ -297,6 +297,194 @@ function startAdapter(options)
 						adapter.log.debug(err.response.status);
 						adapter.log.debug(err.response.headers);
 					}
+/***
+ * test
+ */
+let options = {
+	...REQUEST_OPTIONS,
+	'method': 'GET',
+	// Dont work for me with https:
+	//'url': REQUEST_OPTIONS._protocol + '//' + playerIp + ':' + playerPort + '/player/' + mode + '/' + key + '?' + (attribute != undefined ? attribute + '=' + val + '&' : ''),
+	'url': url,
+	'headers': {
+		'X-Plex-Token': adapter.config.plexToken,
+		'X-Plex-Target-Client-Identifier': playerIdentifier
+	}
+};
+
+adapter.log.debug(`Try to trigger ${mode} action -${action}- on player ${playerIp} with GET.`);
+
+_axios(options).then(res =>
+	{
+		adapter.log.debug(`Successfully triggered ${mode} action -${action}- on player ${playerIp}.`);
+		// confirm commands
+		library.confirmNode({node: id}, state.val)
+	})
+	.catch(err =>
+	{
+		adapter.log.warn(`Error triggering ${mode} action -${action}- on player ${playerIp}! See debug log for details.`);
+		if (err.response) {
+			adapter.log.debug(err.response.data);
+			adapter.log.debug(err.response.status);
+			adapter.log.debug(err.response.headers);
+		}
+		
+		adapter.log.debug(`Try to trigger ${mode} action -${action}- on player ${playerIp} with POST and without header.`);
+		let options = {
+			...REQUEST_OPTIONS,
+			'method': 'POST',
+			// Dont work for me with https:
+			//'url': REQUEST_OPTIONS._protocol + '//' + playerIp + ':' + playerPort + '/player/' + mode + '/' + key + '?' + (attribute != undefined ? attribute + '=' + val + '&' : ''),
+			'url': url,
+		};
+
+	_axios(options).then(res =>
+			{
+				adapter.log.debug(`Successfully triggered ${mode} action -${action}- on player ${playerIp}.`);
+				// confirm commands
+				library.confirmNode({node: id}, state.val)
+			})
+			.catch(err =>
+			{
+				adapter.log.warn(`Error triggering ${mode} action -${action}- on player ${playerIp}! See debug log for details.`);
+				if (err.response) {
+					adapter.log.debug(err.response.data);
+					adapter.log.debug(err.response.status);
+					adapter.log.debug(err.response.headers);
+				}
+				adapter.log.debug(`Try to trigger ${mode} action -${action}- on player ${playerIp} with GET and without headers.`);
+				let options = {
+					...REQUEST_OPTIONS,
+					'method': 'GET',
+					// Dont work for me with https:
+					//'url': REQUEST_OPTIONS._protocol + '//' + playerIp + ':' + playerPort + '/player/' + mode + '/' + key + '?' + (attribute != undefined ? attribute + '=' + val + '&' : ''),
+					'url': url,
+				};
+				_axios(options).then(res =>
+					{
+						adapter.log.debug(`Successfully triggered ${mode} action -${action}- on player ${playerIp}.`);
+						// confirm commands
+						library.confirmNode({node: id}, state.val)
+					})
+					.catch(err =>
+					{
+						adapter.log.warn(`Error triggering ${mode} action -${action}- on player ${playerIp}! See debug log for details.`);
+						if (err.response) {
+							adapter.log.debug(err.response.data);
+							adapter.log.debug(err.response.status);
+							adapter.log.debug(err.response.headers);
+						}
+						adapter.log.debug(`Try to trigger ${mode} action -${action}- on player ${playerIp} with POST and without REQUEST_OPTIONS.`);
+						let options = {
+							'method': 'POST',
+							// Dont work for me with https:
+							//'url': REQUEST_OPTIONS._protocol + '//' + playerIp + ':' + playerPort + '/player/' + mode + '/' + key + '?' + (attribute != undefined ? attribute + '=' + val + '&' : ''),
+							'url': url,
+							'headers': {
+								'X-Plex-Token': adapter.config.plexToken,
+								'X-Plex-Target-Client-Identifier': playerIdentifier
+							}
+						};
+						_axios(options).then(res =>
+					{
+						adapter.log.debug(`Successfully triggered ${mode} action -${action}- on player ${playerIp}.`);
+						// confirm commands
+						library.confirmNode({node: id}, state.val)
+					})
+					.catch(err =>
+					{
+						adapter.log.warn(`Error triggering ${mode} action -${action}- on player ${playerIp}! See debug log for details.`);
+						if (err.response) {
+							adapter.log.debug(err.response.data);
+							adapter.log.debug(err.response.status);
+							adapter.log.debug(err.response.headers);
+						}
+						adapter.log.debug(`Try to trigger ${mode} action -${action}- on player ${playerIp} with GET and without REQUEST_OPTIONS.`);
+						let options = {
+							
+							'method': 'GET',
+							// Dont work for me with https:
+							//'url': REQUEST_OPTIONS._protocol + '//' + playerIp + ':' + playerPort + '/player/' + mode + '/' + key + '?' + (attribute != undefined ? attribute + '=' + val + '&' : ''),
+							'url': url,
+							'headers': {
+								'X-Plex-Token': adapter.config.plexToken,
+								'X-Plex-Target-Client-Identifier': playerIdentifier
+							}
+						};
+							_axios(options).then(res =>
+					{
+						adapter.log.debug(`Successfully triggered ${mode} action -${action}- on player ${playerIp}.`);
+						// confirm commands
+						library.confirmNode({node: id}, state.val)
+					})
+					.catch(err =>
+					{
+						adapter.log.warn(`Error triggering ${mode} action -${action}- on player ${playerIp}! See debug log for details.`);
+						if (err.response) {
+							adapter.log.debug(err.response.data);
+							adapter.log.debug(err.response.status);
+							adapter.log.debug(err.response.headers);
+						}
+						adapter.log.debug(`Try to trigger ${mode} action -${action}- on player ${playerIp} with POST and without REQUEST_OPTIONS and headers.`);
+						let options = {
+							
+							'method': 'POST',
+							// Dont work for me with https:
+							//'url': REQUEST_OPTIONS._protocol + '//' + playerIp + ':' + playerPort + '/player/' + mode + '/' + key + '?' + (attribute != undefined ? attribute + '=' + val + '&' : ''),
+							'url': url,
+							'headers': {
+								'X-Plex-Token': adapter.config.plexToken,
+								'X-Plex-Target-Client-Identifier': playerIdentifier
+							}
+						};
+							_axios(options).then(res =>
+					{
+						adapter.log.debug(`Successfully triggered ${mode} action -${action}- on player ${playerIp}.`);
+						// confirm commands
+						library.confirmNode({node: id}, state.val)
+					})
+					.catch(err =>
+					{
+						adapter.log.warn(`Error triggering ${mode} action -${action}- on player ${playerIp}! See debug log for details.`);
+						if (err.response) {
+							adapter.log.debug(err.response.data);
+							adapter.log.debug(err.response.status);
+							adapter.log.debug(err.response.headers);
+						}
+						adapter.log.debug(`Try to trigger ${mode} action -${action}- on player ${playerIp} with GET and without REQUEST_OPTIONS and headers.`);
+						let options = {
+							
+							'method': 'GET',
+							// Dont work for me with https:
+							//'url': REQUEST_OPTIONS._protocol + '//' + playerIp + ':' + playerPort + '/player/' + mode + '/' + key + '?' + (attribute != undefined ? attribute + '=' + val + '&' : ''),
+							'url': url,
+						
+						};
+							_axios(options).then(res =>
+					{
+						adapter.log.debug(`Successfully triggered ${mode} action -${action}- on player ${playerIp}.`);
+						// confirm commands
+						library.confirmNode({node: id}, state.val)
+					})
+					.catch(err =>
+					{
+						adapter.log.warn(`Error triggering ${mode} action -${action}- on player ${playerIp}! See debug log for details.`);
+						if (err.response) {
+							adapter.log.debug(err.response.data);
+							adapter.log.debug(err.response.status);
+							adapter.log.debug(err.response.headers);
+						}
+					});
+					});
+					});
+					});
+					});
+			});
+	});
+/***
+ * test end
+ */
+
 				});
 				adapter.log.debug('http:' + '//' + playerIp + ':' + playerPort + '/player/' + mode + '/' + key + '?' + (attribute != undefined ? attribute + '=' + val + '&' : '')
 					)
