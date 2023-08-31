@@ -281,6 +281,7 @@ function startAdapter(options)
 						'X-Plex-Target-Client-Identifier': playerIdentifier
 					}
 				};
+				adapter.log.debug(`command url: ${options.url}${options.url.endsWith('?') ? '' : '&'}${adapter.config.plexToken}`)
 
 				_axios(options).then(res =>
 				{
@@ -291,7 +292,11 @@ function startAdapter(options)
 				.catch(err =>
 				{
 					adapter.log.warn(`Error triggering ${mode} action -${action}- on player ${playerIp}! See debug log for details.`);
-					adapter.log.debug(err);
+					if (err.response) {
+						adapter.log.debug(err.response.data);
+						adapter.log.debug(err.response.status);
+						adapter.log.debug(err.response.headers);
+					}
 				});
 				adapter.log.debug('http:' + '//' + playerIp + ':' + playerPort + '/player/' + mode + '/' + key + '?' + (attribute != undefined ? attribute + '=' + val + '&' : '')
 					)
